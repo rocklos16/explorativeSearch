@@ -1,0 +1,147 @@
+\documentclass[conference]{IEEEtran}
+\ifCLASSINFOpdf
+ \else
+ \fi
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+
+\title{Creative Queries for Explorative Search}
+
+
+
+\author{\IEEEauthorblockN{Rama Shravya}
+\IEEEauthorblockA{Faculty of Informatics\\
+Otto Von Guericke Universitat\\
+Magdeburg, Germany, 39106\\
+Email:shravya.rama@gmail.com}
+\and
+\IEEEauthorblockN{Ikram Ul Haq}
+\IEEEauthorblockA{Faculty of Informatics\\
+Otto Von Guericke Universitat\\
+Magdeburg, Germany, 39106\\
+Email:ikramatsofwer@gmail.com}
+}
+
+
+\maketitle
+
+
+\begin{abstract}
+This article discusses our development of a new interactive search engine interface which generates more explorative and creative results, exceptional from typical accurate ad hoc search results. We will discuss in detail about the implementation of efficient algorithms on input queries to generate creative queries. This paper also discusses about different proposed interfaces and their evaluation techniques which resulted in the current interactive interface.
+\end{abstract}
+
+
+\IEEEpeerreviewmaketitle
+
+\section{Motivation}
+
+By using traditional Search Engines like Google, Yahoo and  Bing, will always get you the most accurate and point to point results. These Search engines try to know what users want by utilizing the factors like cookies and geographical location. For example when you search for a keyword “ Manam” which is a tollywood movie title from a system which is either acquainted with this language or location, search engine will give you the list of results of which all of them on the first page would be related to the movie itself. But when the same keyword when used on a different system which is no way related to this domain, search results would have two different fields in which one is related to the movie and the other to a Thai restaurant in Munche.\\ \\
+Traditional search engine suits really best for all other users who know what they want and probably who doesn't want to know the twisted solutions of the same problem. But for the users who would like to view results in a broader prospect, traditional search engine will  narrow down its scope. Hence we need a search engine which is explorative in getting results and which can give a user different aspects of problem solving techniques rather than getting accustomed to the accurate search methodology.
+
+ 
+
+\section{Introduction}
+
+\hspace{10 pt} Exploratory  Search is for those users who are unfamiliar with the domain of their goal and even unsure about the ways to achieve their goals. Explorative Search's goal is to get a broader results view of the search query, which is achieved by manipulating the original search term using various algorithms and then regenerating new query terms. The results which are based on these new query terms are unexpected but relevant to the content of original search term. Hence a user is exposed to wider concept of the search term rather than getting narrowed to the accurate results.
+
+ 
+\hfill Febraury 18, 2016
+\subsection{Related Work}
+
+
+In regard with this concept, there are many papers published. The following are two of them which are  ought to be implemented in Exploratory search.\\
+\begin{enumerate}
+\item Creative Search Using Pataphysics by Fania Raczinski, Hongji Yang, Andrew Hugill
+\item The syzygy surfer: (Ab)using the semantic web to inspire creativity by James Hendler and  Andrew Hugill \\
+\end{enumerate}
+These papers suggest that, in contrast to the traditional search engine's semantic web technologies, in exploratory search engine, relationships between items are exploited in a total random fashion so as to generate new interesting and unusual relations. Syzygy, Clinamen and Anomaly are the different techniques used to collect different random but connected items on web. The new collected items are then fed to traditional search engine to generate explorative search results.
+
+\section{ALGORITHMS \& APPROACH}
+\textbf{Syzygy:}
+This methodology uses WordNet dictionary using NLTK python library to find suitable results. WordNet is a large lexical database of English. Nouns, verbs, adjectives and adverbs are grouped into sets of cognitive synonyms (synsets), each expressing a distinct concept. Syzygy of a term is formed by intersecting the union of hyponyms, holonyms and hypernyms of the term with the original vocabulary of same term.\\
+
+For a search term t\\
+syzygy( 𝑡 ) ={ ℎ ∶ ℎ $\in$ union( 𝑡 ) ∧ ∃ ℎ $\in$ 𝑉 }      \\    
+union( 𝑡 ) = hypo( 𝑡 ) ∪hyper( 𝑡 ) ∪holo( 𝑡 )         \\
+hypo( 𝑡 ) = { ℎ ∶ ℎ ∈ hyponyms( 𝑠 ) }    \\
+hyper( 𝑡 ) = { ℎ ∶ ℎ ∈ hypernyms( 𝑠 ) }    \\
+holo( 𝑡 ) = { ℎ ∶ ℎ ∈ holonyms( 𝑠 ) }    \\
+syno( 𝑡 ) = { 𝑠 ∶ 𝑠 ∈ synonyms( 𝑡 ) }      \\    
+for 𝑠 ∈ syno( 𝑡 ) \\\\
+For e.g. Let t = { live } \\
+syno( live ) = { populate, inhabit, be, domicile }\\
+hypo( live ) = { NULL }\\
+hyper( live ) = { be }\\
+hypo( live ) = { domicile, reside, camp, tent, nest }\\
+->Syzygy( live ) = { be, domicile}\\
+
+\textbf{Clinamen: }
+The clinamen function uses the Damerau-Levenshtein algorithm  which measures the distance between two strings.\\
+For a search term t  \\
+clinamen ( t ) =\{ 𝑣 ∶ 0 < dameraulevenshtein (t, 𝑣   ) ≤ 2 \}, for 𝑣  ∈  𝑉
+
+For e.g. Clinamen of LIVE= LOVE, LIES, SIZE, RIVER
+
+\textbf{Anomaly:}
+Anomaly function simply makes use of WordNet’s antonyms. We first get all synonyms for query term   and then find antonyms for synonyms. Words common to direct antonyms and synonym's antonyms are chosen to be anomaly output.\\
+
+For a search term t \\
+antinomy( 𝑡 ) = { ℎ ∶ ℎ ∈ anto( 𝑡 ) and ∃ ℎ ∈ 𝑉 }   \\
+anto( 𝑡 ) = { ℎ ∶ ℎ ∈ antonyms( 𝑠 ) }           \\
+syno( 𝑡 ) = { 𝑠 ∶ 𝑠 ∈ synonyms( 𝑡 ) }           \\
+for 𝑠 ∈ syno( 𝑡 )\\
+
+For e.g. antonym( live ) = { dead, recorded } \\
+synonym( live ) = { alive, animate, breathing} \\
+antonym( alive ) = {dead}\\
+antonym( animate ) = { dead, inactive, inhibit..}  \\
+antonym( breathing ) = { breathless, dead }\\
+anomaly( live ) = {dead}\\
+
+
+
+
+
+
+\subsubsection{Subsubsection Heading Here}
+Subsubsection text here.
+
+\section{Implementation}
+
+
+
+
+
+\section{Conclusion}
+The conclusion goes here.
+
+
+
+
+
+\section*{Acknowledgment}
+
+
+The authors would like to thank...
+
+
+
+
+
+\begin{thebibliography}{1}
+
+\bibitem{IEEEhowto:kopka}
+H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
+  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
+
+\end{thebibliography}
+
+
+
+
+
+\end{document}
+
+

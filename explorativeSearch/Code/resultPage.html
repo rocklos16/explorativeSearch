@@ -1,0 +1,757 @@
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="author" content="">
+	<link rel="icon" type="image/gif" href="images/favicon.gif">
+    
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/base.css" rel="stylesheet">
+    
+    
+    
+<title>Explorative Search</title><link href="./css/results.css" rel="stylesheet">
+
+
+
+<link rel="stylesheet" href="css/jquery-ui.min.css">
+	 <script src="http://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript"></script>
+<link type="text/css" rel="stylesheet" href="css/simplePagination.css"/>
+
+   
+	<script type="text/javascript" src="javascript/jquery.simplePagination.js"></script>
+	<script type="text/javascript" src="javascript/jquery.min.js"></script>
+  <script src="javascript/jquery-ui.min.js"></script>
+<link href="css/jquery.tagit.css" rel="stylesheet" type="text/css">
+<script src="javascript/tag-it.js" type="text/javascript" charset="utf-8"></script>
+ 
+  <style>
+  #feedback { font-size: 1.4em; }
+  .selectable .ui-selecting { background: #FECA40; }
+  .selectable .ui-selected { background: #F39814; color: white; }
+  .selectable { list-style-type: none; margin: 0; padding: 0; width: 100%; }
+  .selectable li { margin: 3px; padding: 0.4em; font-size: 1.4em; height: 18px; }
+
+
+.margintop{
+
+	margin-top:200px;
+
+}
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 10;
+}
+
+.modal {
+    width: 300px;
+    height: 200px;
+    line-height: 200px;
+    position: fixed;
+    top: 50%; 
+    left: 50%;
+    margin-top: -100px;
+    margin-left: -150px;
+    background-color: #f1c40f;
+    border-radius: 5px;
+    text-align: center;
+    z-index: 11; /* 1px higher than the overlay layer */
+}
+
+
+
+h1 {
+    font-family: 'Federo', sans-serif;
+}
+
+
+
+  </style>
+  <script>
+  $(function() {
+
+
+	
+
+
+    $( ".selectable" ).selectable();
+	 $( "#interactive-submit" )
+      .button()
+      .click(function( event ) {
+      });
+  });
+  </script>
+
+
+
+
+</head>
+<body>    
+
+
+
+
+<div class="overlay" style="display:none"></div>
+<div class="modal" style="display:none">Getting results from server ...</div>
+
+
+<div class="navbar" >
+
+	
+
+	
+
+      <div class="navbar-inner" style="
+    background-image: 
+    -webkit-linear-gradient(top, #373D4A, #86888E);
+">
+        <div class="container">
+	  <div class="span1" style="font-size:1px;">.</div>
+          <div class="nav-collapse pull-right">
+            <ul class="nav" style="color:#E8E8E8">
+	      
+	      
+	      
+	      
+	      
+	      
+	      
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+<div class="container">      <div class="row">
+	<div class="span8 offset2">
+	  <ul class="nav nav-tabs" style="display:none">
+	    <li algoType="anamoly" class="active">
+	      <a>Anamoly</a>
+	    </li>
+	    <li algoType="syzygy">
+	      <a>Syzygy</a>
+	    </li>
+	  </ul>
+	  <form>
+	  <div class="row margintop">
+		
+	    <ul id="myTags" class="span6" style="    min-height: 36px;">
+
+		    <!-- Existing list items will be pre-added to the tags -->
+		    
+		</ul>
+	    <input type="button" id="explorativeSearch" class="btn btn-frontpage" value="Explorative Search"  style="color:#ffffff;height:38px;margin-left:10px;" />
+	    
+	    
+	  </div></form>
+	</div>
+      </div>
+
+
+<div class="row" style="
+">
+	<div id="suggestion" style="
+    width: 770px;display:none;
+    /* background-color: aqua; */
+    margin-left: 230px;
+    /* overflow: auto; */
+    /* padding: 10px; */
+    /* background-image: 
+    -webkit-linear-gradient(top, #373D4A, #86888E); */
+">
+	<lable>Spelling suggestions</lable>
+	 <ul id="suggested-terms" style="display:table;margin-left:0px;min-height: 25px; background-image: -webkit-linear-gradient(top, #F0F0F0, #F0F0F0);">
+
+	    <!-- Existing list items will be pre-added to the tags -->
+	   
+	</ul>
+	   
+</div>
+
+</div>
+<div class="row" style="
+">
+	<div id="interaction" style="
+    width: 770px;display:none;
+    /* background-color: aqua; */
+    margin-left: 230px;
+    /* overflow: auto; */
+    /* padding: 10px; */
+    /* background-image: 
+    -webkit-linear-gradient(top, #373D4A, #86888E); */
+">
+	<lable>Available Terms</lable>
+	 <ul id="available-terms" style="margin-left:0px;min-height: 25px; background-image: -webkit-linear-gradient(top, #F0F0F0, #F0F0F0); display:table;">
+
+	    <!-- Existing list items will be pre-added to the tags -->
+	   
+	</ul>
+	   
+</div>
+ 
+  
+	
+  
+	
+</div>
+<div class="row manualResults" id="explorativeResults"  style="display:none"><div class="span2" style="margin-top:8px;"></div><div class="span8"><hr id="result-sep"><div id="stats">172,601 results found for <i>live</i> </div><div id="results"><div class="result">
+				<div id="result-title"><a id="result-title" href="http://stackoverflow.com/questions/3262092/live-streaming-with-silverlight-4">Live streaming with silverlight 4</a></div>
+                <div id="result-excerpt"><b>Live</b> streaming with silverlight 4 <b>Live</b> streaming with silverlight 4 Greeting, Is there a <b>live</b> streaming server for silverlight 4 from Microsoft like
+				</div>
+				<div id="result-url">http://stackoverflow.com/question.../live-streaming-with-silverlight-4</div>
+			</div></div><div class="pagination pagination-centered" style="
+    display: none;
+"><ul><li class="active"><a>1</a></li><li><a href="http://symbolhound.com/?q=live&amp;p=2">2</a></li><li><a href="http://symbolhound.com/?q=live&amp;p=3">3</a></li><li><a href="http://symbolhound.com/?q=live&amp;p=4">4</a></li><a href="http://symbolhound.com/?q=live&amp;p=2"><b>»</b></a></ul></div></div></div>
+
+
+
+<div class="row manualResults" id="anomalyResults" style="display:none"><div class="span2" style="margin-top:8px;"></div><div class="span8"><hr id="result-sep"><div id="stats">172,601 results found for <i>live</i> </div><div id="results"><div class="result">
+				<div id="result-title"><a id="result-title" href="http://stackoverflow.com/questions/3262092/live-streaming-with-silverlight-4">Live streaming with silverlight 4</a></div>
+                <div id="result-excerpt"><b>Live</b> streaming with silverlight 4 <b>Live</b> streaming with silverlight 4 Greeting, Is there a <b>live</b> streaming server for silverlight 4 from Microsoft like
+				</div>
+				<div id="result-url">http://stackoverflow.com/question.../live-streaming-with-silverlight-4</div>
+			</div></div><div class="pagination pagination-centered" style="
+    display: none;
+"><ul><li class="active"><a>1</a></li><li><a href="http://symbolhound.com/?q=live&amp;p=2">2</a></li><li><a href="http://symbolhound.com/?q=live&amp;p=3">3</a></li><li><a href="http://symbolhound.com/?q=live&amp;p=4">4</a></li><a href="http://symbolhound.com/?q=live&amp;p=2"><b>»</b></a></ul></div></div></div>
+
+
+
+<div class="row manualResults" id="bingResults" style="display:none">
+         <div class="span2" style="margin-top:8px;"></div>
+         <div class="span8">
+            <hr id="result-sep">
+            <div id="stats">172,601 results found for <i>live</i> </div>
+            <div id="results">
+               <div class="result">
+                  <div id="result-title"><a id="result-title" href="http://man-sur.blogspot.com/">Mansur Live</a></div>
+                  <div id="result-excerpt">Mansur <b>Live</b> Mansur <b>Live</b> Anything Related to Website home About Thank you! Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                  </div>
+                  <div id="result-url">http://man-sur.blogspot.com/</div>
+               </div>
+               
+            </div>
+            <div class="pagination pagination-centered"  >
+               <ul id="pagination">
+                    <li id="prev" pageNo="0" style="cursor: pointer;"><a> Prev </a></li>
+			<li id="moreResults" pageNo="0" style="cursor: pointer;"><a> Page# 1 </a></li>
+			<li id="next" pageNo="0" style="cursor: pointer;"><a> Next </a></li>
+
+               </ul>
+            </div>
+         </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+<script type="text/javascript">
+
+var syzygySearchTerm;
+var bingSearchTerm;
+var anomalySearchTerm;
+var explorationStarted = false;
+var creatingTag = false;
+
+
+
+
+
+
+
+$(document).ready(function() {
+
+	
+
+
+	$('ul.nav li').click(function(){
+
+		$('ul.nav li').removeClass('active');
+		$(this).addClass('active');
+	
+
+	});
+
+
+	
+	$("#available-terms").tagit({
+
+		readOnly: true,
+		removeConfirmation: true,
+		allowDuplicates: false,
+		onTagClicked: function(event, ui) {
+				console.log(ui.tag);
+				var noOfTags = $("#myTags").tagit("assignedTags").length;
+				if(noOfTags == 5)
+				{
+					alert("search terms limit reached");
+					return;
+				}
+
+				$("#available-terms").tagit("removeTagByLabel", ui.tagLabel);
+				$("#myTags").tagit("createTag", ui.tagLabel);
+			},
+
+		afterTagAdded: function(event, ui) {
+				$('#interaction').show();
+				
+			},
+
+
+		afterTagRemoved: function(event, ui) {
+
+				var noOfTags = $("#available-terms").tagit("assignedTags").length;
+				console.log("noootags : " + noOfTags);
+				
+				if(noOfTags == 0)
+					$('#interaction').hide();
+
+
+	
+      			}
+
+	});
+
+
+	$("#suggested-terms").tagit({
+
+		readOnly: true,
+		removeConfirmation: true,
+		allowDuplicates: false,
+		tagLimit: 15,
+		onTagClicked: function(event, ui) {
+				console.log(ui.tag);
+				$("#suggested-terms").tagit("removeTagByLabel", ui.tagLabel);
+				$("#myTags").tagit("createTag", ui.tagLabel);
+			},
+
+		afterTagAdded: function(event, ui) {
+				$('#suggestion').show();
+				
+			},
+
+
+		afterTagRemoved: function(event, ui) {
+
+				var noOfTags = $("#suggested-terms").tagit("assignedTags").length;
+				console.log("noootags : " + noOfTags);
+				
+				if(noOfTags == 0)
+					$('#suggestion').hide();
+
+
+	
+      			}
+
+	});
+
+
+
+
+
+	
+        $("#myTags").tagit({
+
+		placeholderText: "Enter search term ",
+		removeConfirmation: true,
+		allowDuplicates: false,
+		tagLimit: 5,
+		beforeTagRemoved: function(event, ui) {
+			console.log(ui.tagLabel);
+			$("#available-terms").tagit("createTag", ui.tagLabel);
+		    },
+		onTagClicked: function(event, ui) {
+			console.log(ui.tagLabel);
+			},
+
+		afterTagAdded: function(event, ui) {
+			creatingTag = true;
+			console.log("creatingTag in tag: " + creatingTag);
+			
+			setTimeout(function(){
+				console.log("explorationStarted in tag : " + explorationStarted);
+				if(!explorationStarted){
+				
+					bingSpelling(ui.tagLabel);
+				}
+
+			}, 200);
+			
+			creatingTag = false;
+		    }
+
+	});
+
+	$('#myTags li.tagit-new input').focus();
+
+	
+
+
+	
+	
+
+    });
+
+
+
+
+
+var searchterms = "";
+  window.onload = function() {  
+  //document.getElementById("searchfield").focus();
+
+	$('#interactive-submit').click(function(event){
+		
+		
+		overlay_start();
+		$.getJSON("datarequest", {"word" : "live"}, function(data){
+
+			console.log("printing data " + data);
+			var terms = data.available_terms;
+			console.log("before in seta : " + terms);
+			setAvailableTerms(terms);
+			var terms2 = data.selected_terms;
+			setSelectedTerms(terms2);
+			
+			overlay_end();
+
+		});
+
+	});
+
+	$('#pagination li#prev').click(function(event){
+
+		explorationStarted = true;
+
+		if(creatingTag)
+			return;
+
+		var query_words = $("#myTags").tagit("assignedTags");
+		var pageNo = parseInt($('#moreResults').attr('pageNo'));
+
+		if(pageNo == 0)
+			return;
+
+		overlay_start();
+		
+		pageNo -= 1;
+		$('#moreResults').attr('pageNo', (pageNo));
+
+		var requestType = "more"; // seprately we can send "bingRequest" or "explorativeRequest"
+		var algo = "both_algo";
+
+		$.getJSON(requestType, {"word" : query_words.toString(), "algo" : algo, "syzygySearchTerm" : syzygySearchTerm, "bingSearchTerm" : bingSearchTerm, "anomalySearchTerm" : anomalySearchTerm, "pageNo" : pageNo}, function(data){
+
+		
+			$('#moreResults a').html('page# ' + (pageNo + 1));
+			console.log( data);
+			var terms = data.available_terms;
+			var terms2 = data.selected_terms;
+			setResults(data.syzygyResults, data.bingResults, data.anomalyResults, syzygySearchTerm, bingSearchTerm, anomalySearchTerm);
+			
+			overlay_end();
+			explorationStarted = false;
+
+		});
+		
+		
+	
+		
+
+	});
+
+	$('#pagination li#next').click(function(event){
+		explorationStarted = true;
+		if(creatingTag)
+			return;
+		overlay_start();
+		console.log("clicked");
+		var query_words = $("#myTags").tagit("assignedTags");
+		var pageNo = parseInt($('#moreResults').attr('pageNo'));
+		pageNo += 1;
+		$('#moreResults').attr('pageNo', (pageNo));
+
+		var requestType = "more"; // seprately we can send "bingRequest" or "explorativeRequest"
+		var algo = "both_algo";
+
+		$.getJSON(requestType, {"word" : query_words.toString(), "algo" : algo, "syzygySearchTerm" : syzygySearchTerm, "bingSearchTerm" : bingSearchTerm, "anomalySearchTerm" : anomalySearchTerm, "pageNo" : pageNo}, function(data){
+
+		
+			$('#moreResults a').text('page# ' + (pageNo + 1));
+			console.log( data);
+			var terms = data.available_terms;
+			var terms2 = data.selected_terms;
+			setResults(data.syzygyResults, data.bingResults, data.anomalyResults, syzygySearchTerm, bingSearchTerm, anomalySearchTerm);
+			
+			overlay_end();
+			explorationStarted = false;
+
+		});
+		
+		
+	
+		
+
+	});
+
+
+
+
+
+
+	$('#moreResults').click(function(event){
+		
+		return;
+
+		overlay_start();
+		console.log("clicked");
+		var query_words = $("#myTags").tagit("assignedTags");
+		var pageNo = parseInt($('#moreResults').attr('pageNo'));
+		$('#moreResults').attr('pageNo', (pageNo + 1));
+
+		var requestType = "more"; // seprately we can send "bingRequest" or "explorativeRequest"
+		var algo = "both_algo";
+
+		$.getJSON(requestType, {"word" : query_words.toString(), "algo" : algo, "syzygySearchTerm" : syzygySearchTerm, "bingSearchTerm" : bingSearchTerm, "anomalySearchTerm" : anomalySearchTerm, "pageNo" : pageNo}, function(data){
+
+		
+
+			console.log( data);
+			var terms = data.available_terms;
+			var terms2 = data.selected_terms;
+			setResults(data.syzygyResults, data.bingResults, data.anomalyResults, syzygySearchTerm, bingSearchTerm, anomalySearchTerm);
+			
+			overlay_end();
+
+		});
+		
+		
+	
+		
+
+	});
+
+
+
+	$('#explorativeSearch').click(function(event){
+		console.log("creatingTag in explo: " + creatingTag);
+		if(creatingTag)
+			return;
+		explorationStarted = true;
+		console.log("explorationStarted in explo: " + explorationStarted);
+		overlay_start();
+		console.log("clicked");
+		var query_words = $("#myTags").tagit("assignedTags");
+		$('#moreResults').attr('pageNo', (0));
+		$('#moreResults a').html('page# ' + (1));
+
+		var requestType = "both"; // seprately we can send "bingRequest" or "explorativeRequest"
+		var algo = "both_algo";
+
+		console.log("before ajax request : " + query_words);
+		//waiting for tag creation process
+		setTimeout(function(){
+			$.getJSON(requestType, {"word" : query_words.toString(), "algo" : algo}, function(data){
+
+		
+				syzygySearchTerm = data.syzygySearchTerm;
+				bingSearchTerm = data.bingSearchTerm;
+				anomalySearchTerm = data.anomalySearchTerm;
+
+				console.log( data);
+				var terms2 = data.selected_terms;
+				setSelectedTerms(terms2);
+				var terms = data.available_terms;
+				setAvailableTerms(terms, terms2);
+			
+				setResults(data.syzygyResults, data.bingResults, data.anomalyResults, data.syzygySearchTerm, data.bingSearchTerm, data.anomalySearchTerm);
+				$('.manualResults').show();
+				$('.row').removeClass('margintop');
+				overlay_end();
+				explorationStarted = false;
+
+			});
+
+		}, 100);
+		
+		
+		
+	
+		
+
+	});
+
+	
+
+	
+}
+
+function bingSpelling(data){
+
+	$.getJSON("bingSpelling", {"word" : data}, function(data){
+
+			$("#suggested-terms").tagit("createTag", data.spellSuggestion.Value);
+
+		});
+
+}
+
+
+function setAvailableTerms(terms, selectedTerms)
+{
+
+	
+	$("#available-terms").tagit("removeAll");
+	console.log("in seta : " + terms);
+
+
+	if( !(Object.prototype.toString.call( terms ) === '[object Array]') ) {
+	    $("#available-terms").tagit("createTag", terms);
+		
+		return;
+	}
+	$.each(terms, function(key, value){
+		console.log("index of in local  : "+ value + "    :  "  + selectedTerms.toString().indexOf(value));
+		if(selectedTerms.toString().indexOf(value) == -1)
+			$("#available-terms").tagit("createTag", value);
+	});
+}
+
+
+function setSelectedTerms(terms)
+{
+	searchterm = "";
+	$("#myTags").tagit("removeAll");
+
+	if( !(Object.prototype.toString.call( terms ) === '[object Array]') ) {
+	    $("#myTags").tagit("createTag", terms);
+		
+		return;
+	}
+	$.each(terms, function(key, value){
+
+		$("#myTags").tagit("createTag", value);
+		
+	});
+
+}
+
+
+
+function overlay_start()
+{
+	$('.modal, .overlay').show();
+
+}
+
+
+function overlay_end()
+{
+	$('.modal, .overlay').hide();
+
+}
+
+function getSelectedTerms()
+{
+	var terms = new Array();
+
+	$('#selectable2 li').each(function(key, val){
+
+		terms.push($(this).text());
+	});
+
+	return terms;
+
+}
+
+function setResults(explorativeResults, bingResults, anomalyResults, expWord, bingWord, anomalyWord)
+{
+	var pageNo = parseInt($('#moreResults').attr('pageNo'));
+	console.log(explorativeResults);
+	console.log(bingResults);
+	bingWord = bingWord.replace(new RegExp(',', 'g'), ' ');
+	var counter = 0;
+	$('#explorativeResults .span8').find('#results').empty();
+	$.each(explorativeResults, function(key,val){
+		counter++;
+		$('#explorativeResults .span8').find('#results').append('<div class="result"><div id="result-title"><a id="result-title" href="' + val.Url + '" target="_blank" >' + val.Title + '</a></div><div id="result-excerpt">' + val.Description + '</div><div id="result-url">' + val.Url + '</div></div>');
+	
+	});
+
+	if(counter == 0 && pageNo == 0)
+		$('#explorativeResults #stats').html('No Explorative Syzygy results');
+	else if(counter == 0 && pageNo != 0)
+		$('#explorativeResults #stats').html('No more Explorative Syzygy results');
+	else
+		$('#explorativeResults #stats').html('Explorative Syzygy results for <i>' + expWord + ' ' + bingWord +  '</i>');
+
+
+
+	counter = 0;
+	$('#anomalyResults .span8').find('#results').empty();
+	$.each(anomalyResults, function(key,val){
+		counter++;
+		$('#anomalyResults .span8').find('#results').append('<div class="result"><div id="result-title"><a id="result-title" href="' + val.Url + '" target="_blank">' + val.Title + '</a></div><div id="result-excerpt">' + val.Description + '</div><div id="result-url">' + val.Url + '</div></div>');
+	
+	});
+
+	if(counter == 0 && pageNo == 0)
+		$('#anomalyResults #stats').html('No Explorative Anomaly results');
+	else if(counter == 0)
+		$('#anomalyResults #stats').html('No more Explorative Anomaly results ');
+	else
+		$('#anomalyResults #stats').html('Explorative Anomaly results for <i>' + anomalyWord + ' ' + bingWord +  '</i>');
+
+
+	counter = 0;
+	$('#bingResults .span8').find('#results').empty();
+	$.each(bingResults, function(key,val){
+		counter++;
+		$('#bingResults .span8').find('#results').append('<div class="result"><div id="result-title"><a id="result-title" href="' + val.Url + '" target="_blank">' + val.Title + '</a></div><div id="result-excerpt">' + val.Description + '</div><div id="result-url">' + val.Url + '</div></div>');
+	
+	});
+	
+	if(counter == 0 && pageNo == 0)
+		$('#bingResults #stats').html('No Conventional results');
+	else if(counter == 0)
+		$('#bingResults #stats').html('No more conventional results ');
+	else
+		$('#bingResults #stats').html('Conventional results for <i>' + bingWord + '</i>');
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ul class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content tagit-autocomplete" id="ui-id-1" tabindex="0" style="display: none;"></ul><span role="status" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></span></body></html>
